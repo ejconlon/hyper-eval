@@ -1,0 +1,13 @@
+{
+  "version": "0.1.0.0",
+  "cells": [
+    "html $ toStrict $ pack \"<p>hi</p>\""
+  ],
+  "importModules": "Data.Text.Lazy",
+  "loadFiles": "",
+  "settings": {
+    "packageTool": "stack",
+    "packagePath": "../stack.yaml",
+    "searchPath": ""
+  }
+}

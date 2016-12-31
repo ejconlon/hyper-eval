@@ -18,6 +18,7 @@ library
   exposed-modules:     HyperEval
   build-depends:       base >= 4.7 && < 5
                      , aeson
+                     , aeson-casing
                      , bytestring
                      , optparse-applicative
                      , text

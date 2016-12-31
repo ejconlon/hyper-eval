@@ -2,30 +2,28 @@
 
 module HyperEval where
 
+import qualified Data.Aeson as A
+import qualified Data.Aeson.Types as AT
+import qualified Data.Aeson.Casing as AC
+import Data.Monoid ((<>))
 import Data.Text (Text)
 import GHC.Generics (Generic)
-
-{-
-{
-  "version": "0.1.0.0",
-  "cells": [
-    "html $ toStrict $ renderText $ renderHtml undefined"
-  ],
-  "importModules": "Analyze\nData.Text.Lazy\nLucid",
-  "loadFiles": "",
-  "settings": {
-    "packageTool": "stack",
-    "packagePath": "../stack.yaml",
-    "searchPath": ""
-  }
-}
--}
+import qualified Options.Applicative as O
 
 data Settings = Settings
   { packageTool :: Text
   , packagePath :: Text
   , searchPath :: Text
   } deriving (Show, Eq, Generic)
+
+camelCase :: AT.Options
+camelCase = AC.aesonDrop 0 AC.camelCase
+
+instance A.ToJSON Settings where
+   toJSON = A.genericToJSON camelCase
+
+instance A.FromJSON Settings where
+   parseJSON = A.genericParseJSON camelCase
 
 data Notebook = Notebook
   { version :: Text
@@ -35,10 +33,30 @@ data Notebook = Notebook
   , settings :: Settings
   } deriving (Show, Eq, Generic)
 
+instance A.ToJSON Notebook where
+   toJSON = A.genericToJSON camelCase
+
+instance A.FromJSON Notebook where
+   parseJSON = A.genericParseJSON camelCase
+
 data Options = Options
-  { source :: Text
-  , dest :: Maybe Text
-  } deriving (Show, Eq, Generic)
+  { source :: String
+  , dest :: String
+  } deriving (Show, Eq)
+
+options :: O.Parser Options
+options = Options
+     <$> O.strOption
+         ( O.long "source"
+        <> O.metavar "SOURCE"
+        <> O.help "path to source notebook" )
+     <*> O.strOption
+         ( O.long "dest"
+        <> O.help "path to destination html"
+        <> O.metavar "DEST" )
+
+run :: Options -> IO ()
+run _ = putStrLn "hello, world"
 
 main :: IO ()
-main = putStrLn "hello, world"
+main = O.execParser (O.info options O.fullDesc) >>= run
