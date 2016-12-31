@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import qualified HyperEval as HE
 
 main :: IO ()
-main = someFunc
+main = HE.main
