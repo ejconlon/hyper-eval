@@ -41,7 +41,7 @@ instance A.FromJSON Notebook where
 
 data Options = Options
   { source :: String
-  , dest :: String
+  , dest :: Maybe String
   } deriving (Show, Eq)
 
 options :: O.Parser Options
@@ -50,10 +50,11 @@ options = Options
          ( O.long "source"
         <> O.metavar "SOURCE"
         <> O.help "path to source notebook" )
-     <*> O.strOption
-         ( O.long "dest"
-        <> O.help "path to destination html"
-        <> O.metavar "DEST" )
+     <*> O.optional
+         ( O.strOption
+           ( O.long "dest"
+          <> O.help "path to destination html"
+          <> O.metavar "DEST" ) )
 
 run :: Options -> IO ()
 run _ = putStrLn "hello, world"
