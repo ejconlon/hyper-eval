@@ -5,9 +5,12 @@ module HyperEval where
 import qualified Data.Aeson as A
 import qualified Data.Aeson.Types as AT
 import qualified Data.Aeson.Casing as AC
+import qualified Data.ByteString.Lazy as LBS
+import qualified Data.ByteString.Lazy.Char8 as LBC
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import GHC.Generics (Generic)
+import qualified Lucid as L
 import qualified Options.Applicative as O
 
 data Settings = Settings
@@ -40,8 +43,8 @@ instance A.FromJSON Notebook where
    parseJSON = A.genericParseJSON camelCase
 
 data Options = Options
-  { source :: String
-  , dest :: Maybe String
+  { source :: FilePath
+  , dest :: Maybe FilePath
   } deriving (Show, Eq)
 
 options :: O.Parser Options
@@ -56,8 +59,32 @@ options = Options
           <> O.help "path to destination html"
           <> O.metavar "DEST" ) )
 
+data Output = Output deriving (Show, Eq)
+
+-- XXX TODO
+renderOutput :: Output -> L.Html ()
+renderOutput _ = return ()
+
+-- XXX TODO
+processNotebook :: Notebook -> IO Output
+processNotebook nb = return Output
+
+readNotebook :: FilePath -> IO Notebook
+readNotebook s = do
+  bs <- LBS.readFile s 
+  case A.decode bs of
+    Nothing -> fail ("bad source: " ++ s)
+    Just nb -> return nb
+
 run :: Options -> IO ()
-run _ = putStrLn "hello, world"
+run (Options s d) = do
+  nb <- readNotebook s
+  o <- processNotebook nb
+  let h = renderOutput o
+      bs = L.renderBS h
+  case d of
+    Nothing -> LBC.putStrLn bs
+    Just d' -> LBS.writeFile d' bs
 
 main :: IO ()
 main = O.execParser (O.info options O.fullDesc) >>= run
