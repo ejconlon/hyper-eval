@@ -10,6 +10,7 @@ import qualified Data.ByteString.Lazy.Char8 as LBC
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import GHC.Generics (Generic)
+import qualified Language.Haskell.Interpreter as H
 import qualified Lucid as L
 import qualified Options.Applicative as O
 
@@ -86,5 +87,5 @@ run (Options s d) = do
     Nothing -> LBC.putStrLn bs
     Just d' -> LBS.writeFile d' bs
 
-main :: IO ()
-main = O.execParser (O.info options O.fullDesc) >>= run
+exe :: IO ()
+exe = O.execParser (O.info options O.fullDesc) >>= run

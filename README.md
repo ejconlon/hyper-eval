@@ -1,5 +1,4 @@
 hyper-eval
 =====
 
-Evaluate a hyper-haskell notebook.
-
+Evaluates a Hyper-Haskell notebook and renders HTML.

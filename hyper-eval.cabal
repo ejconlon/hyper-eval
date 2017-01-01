@@ -1,6 +1,6 @@
 name:                hyper-eval
 version:             0.1.0.0
-synopsis:            Initial project template from stack
+synopsis:            Evaluates a Hyper-Haskell notebook and renders HTML.
 description:         Please see README.md
 homepage:            https://github.com/ejconlon/hyper-eval#readme
 license:             BSD3
@@ -8,7 +8,7 @@ license-file:        LICENSE
 author:              Eric Conlon
 maintainer:          ejconlon@gmail.com
 copyright:           2016 Eric Conlon
-category:            Web
+category:            Compilers/Interpreters
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
@@ -20,6 +20,7 @@ library
                      , aeson
                      , aeson-casing
                      , bytestring
+                     , hint
                      , lucid
                      , optparse-applicative
                      , text
@@ -34,7 +35,7 @@ executable hyper-eval-exe
   default-language:    Haskell2010
   default-extensions:  
 
-test-suite analyze-test
+test-suite hyper-eval-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
