@@ -8,6 +8,7 @@ import qualified Data.Aeson.Types as AT
 import qualified Data.Aeson.Casing as AC
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.ByteString.Lazy.Char8 as LBC
+import Data.List (nub)
 import Data.Monoid ((<>))
 import qualified Data.Text as T
 import Data.Text (Text)
@@ -70,7 +71,7 @@ data Output = Output
   }
 
 interpSetImports :: [Text] -> HI.Interpreter ()
-interpSetImports xs = HI.setImports (ys ++ ["Prelude", "Hyper"])
+interpSetImports xs = HI.setImports (nub (["Prelude", "Hyper"] ++ ys))
   where ys = T.unpack <$> filter (not . T.null) xs
 
 interpLoadFiles  :: [Text] -> HI.Interpreter ()
