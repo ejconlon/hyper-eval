@@ -64,8 +64,8 @@ options = Options
           <> O.metavar "DEST" ) )
 
 data Output = Output
-  { modules :: [Text]
-  , files :: [Text]
+  { files :: [Text]
+  , modules :: [Text]
   , results :: [(Text, HY.Graphic)]
   }
 
@@ -78,10 +78,20 @@ interpLoadFiles xs = HI.loadModules ys
   where ys = T.unpack <$> filter (not . T.null) xs
 
 interpEval :: Text -> HI.Interpreter HY.Graphic
-interpEval _ = undefined
+interpEval expr = do
+  let expr' = "Hyper.displayIO " ++ HI.parens (T.unpack expr)
+  m <- HI.interpret expr' (HI.as :: IO HY.Graphic)
+  HI.liftIO m
 
 interpNotebook :: Notebook -> HI.Interpreter Output
-interpNotebook = undefined
+interpNotebook nb = do
+  let fs = T.lines (loadFiles nb)
+      ms = T.lines (importModules nb)
+      cs = cells nb
+  interpLoadFiles fs
+  interpSetImports ms
+  gs <- traverse interpEval cs
+  return $ Output fs ms (zip cs gs)
 
 -- XXX TODO
 renderOutput :: Output -> L.Html ()
