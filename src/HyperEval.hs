@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module HyperEval where
 
@@ -96,7 +97,11 @@ interpNotebook nb = do
 
 -- XXX TODO
 renderOutput :: Output -> L.Html ()
-renderOutput _ = return ()
+renderOutput (Output fs ms cgs) = do
+  L.html_ $ do
+    L.h1_ "Files"
+    L.h1_ "Modules"
+    L.h1_ "Cells"
 
 processNotebook :: Notebook -> IO Output
 processNotebook nb = do
