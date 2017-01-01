@@ -2,15 +2,18 @@
 
 module HyperEval where
 
+import Control.Exception (throwIO)
 import qualified Data.Aeson as A
 import qualified Data.Aeson.Types as AT
 import qualified Data.Aeson.Casing as AC
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.ByteString.Lazy.Char8 as LBC
 import Data.Monoid ((<>))
+import qualified Data.Text as T
 import Data.Text (Text)
 import GHC.Generics (Generic)
-import qualified Language.Haskell.Interpreter as H
+import qualified Hyper as HY
+import qualified Language.Haskell.Interpreter as HI
 import qualified Lucid as L
 import qualified Options.Applicative as O
 
@@ -60,15 +63,35 @@ options = Options
           <> O.help "path to destination html"
           <> O.metavar "DEST" ) )
 
-data Output = Output deriving (Show, Eq)
+data Output = Output
+  { modules :: [Text]
+  , files :: [Text]
+  , results :: [(Text, HY.Graphic)]
+  }
+
+interpSetImports :: [Text] -> HI.Interpreter ()
+interpSetImports xs = HI.setImports (ys ++ ["Prelude", "Hyper"])
+  where ys = T.unpack <$> filter (not . T.null) xs
+
+interpLoadFiles  :: [Text] -> HI.Interpreter ()
+interpLoadFiles xs = HI.loadModules ys
+  where ys = T.unpack <$> filter (not . T.null) xs
+
+interpEval :: Text -> HI.Interpreter HY.Graphic
+interpEval _ = undefined
+
+interpNotebook :: Notebook -> HI.Interpreter Output
+interpNotebook = undefined
 
 -- XXX TODO
 renderOutput :: Output -> L.Html ()
 renderOutput _ = return ()
 
--- XXX TODO
 processNotebook :: Notebook -> IO Output
-processNotebook nb = return Output
+processNotebook nb = do
+  let interp = interpNotebook nb
+  result <- HI.runInterpreter interp
+  either throwIO pure result
 
 readNotebook :: FilePath -> IO Notebook
 readNotebook s = do

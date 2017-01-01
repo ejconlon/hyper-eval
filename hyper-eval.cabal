@@ -21,6 +21,7 @@ library
                      , aeson-casing
                      , bytestring
                      , hint
+                     , hyper
                      , lucid
                      , optparse-applicative
                      , text
