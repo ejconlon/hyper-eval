@@ -4,6 +4,7 @@
 module HyperEval where
 
 import Control.Exception (throwIO)
+import Control.Monad (forM_)
 import qualified Data.Aeson as A
 import qualified Data.Aeson.Types as AT
 import qualified Data.Aeson.Casing as AC
@@ -14,7 +15,7 @@ import Data.Monoid ((<>))
 import qualified Data.Text as T
 import Data.Text (Text)
 import GHC.Generics (Generic)
-import qualified Hyper as HY
+import qualified Hyper.Internal as HY
 import qualified Language.Haskell.Interpreter as HI
 import qualified Lucid as L
 import qualified Options.Applicative as O
@@ -100,8 +101,13 @@ renderOutput :: Output -> L.Html ()
 renderOutput (Output fs ms cgs) = do
   L.html_ $ do
     L.h1_ "Files"
+    L.ul_ $ traverse (L.li_ . L.toHtml) fs
     L.h1_ "Modules"
+    L.ul_ $ traverse (L.li_ . L.toHtml) ms
     L.h1_ "Cells"
+    L.ul_ $ forM_ cgs $ \(c, g) -> L.li_ $ do
+      L.pre_ (L.toHtml c)
+      L.toHtmlRaw (HY.gHtml g)
 
 processNotebook :: Notebook -> IO Output
 processNotebook nb = do

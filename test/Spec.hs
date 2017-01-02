@@ -21,11 +21,19 @@ testRoundTrip p path = testCase ("round trip: " ++ path) $ do
         Left e' -> fail ("could not decode again" ++ path ++ ": " ++ e')
         Right o' -> o' @?= o
 
+testRender :: FilePath -> FilePath -> TestTree
+testRender s d = testCase ("render " ++ s) $ do
+  let o = HE.Options s (Just d)
+  -- TODO remove html file
+  HE.run o
+  -- TODO assert html file exists
+
 -- Runner
 
 tests :: TestTree
 tests = testGroup "Tests"
   [ testRoundTrip (Proxy :: Proxy HE.Notebook) "data/Demo.hhs"
+  , testRender "data/Demo.hhs" "output/Demo.html"
   ]
 
 main :: IO ()
