@@ -1,7 +1,7 @@
 import qualified Data.Aeson as A
 import qualified Data.ByteString.Lazy as LBS
 import           Data.Proxy
-import qualified HyperEval as HE
+import qualified Hyper.Eval as HE
 import           Test.Tasty
 import           Test.Tasty.HUnit
 

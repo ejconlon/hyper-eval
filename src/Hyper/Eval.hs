@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module HyperEval where
+module Hyper.Eval where
 
 import Control.Exception (throwIO)
 import Control.Monad (forM_)

@@ -1,6 +1,6 @@
 module Main where
 
-import qualified HyperEval as HE
+import qualified Hyper.Eval as HE
 
 main :: IO ()
 main = HE.exe
